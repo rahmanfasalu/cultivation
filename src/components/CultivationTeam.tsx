@@ -2,54 +2,48 @@ import React, { useState, useEffect } from "react";
 import UserListComponent from "./UserListComponent";
 import AddUserModal from "./AddUserModal";
 import UserRole from "./UserRole";
-import { getUsersByCultivation } from "./../services/UserService";
-
-interface User {
-  id: number;
-  name: string;
-  role: {
-    name: string;
-  };
-}
+import { Cultivation, getUsersByCultivation } from "./../services/UserService";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const CultivationTeam: React.FC = () => {
-  const [usersByCultivation, setUsersByCultivation] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const users: Cultivation[] = useAppSelector((state) => {
+    return state.users.users;
+  });
+
+  const [usersByCultivation, setUsersByCultivation] = useState<Cultivation[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
     null
   );
 
   useEffect(() => {
-    fetchUsersByCultivation();
+    dispatch(getUsersByCultivation())
   }, []);
+
+  useEffect(() => {
+    setUsersByCultivation(users);
+  }, [users])
+
+  useEffect(() => {
+    console.log(usersByCultivation);
+  }, [usersByCultivation])
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
-  const fetchUsersByCultivation = async () => {
-    try {
-      const fetchedUsersByCultivation = await getUsersByCultivation();
-      setUsersByCultivation(fetchedUsersByCultivation);
-    } catch (err) {
-      setError("Failed to fetch users");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDropdownToggle = (index: number) => {
     setOpenDropdownIndex(openDropdownIndex === index ? null : index);
   };
 
+  /*
   if (loading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
-  }
+  }  */
 
   return (
     <div className="container mx-auto p-4">
@@ -63,8 +57,8 @@ const CultivationTeam: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {usersByCultivation.map((item, index) => (
-            <tr key={item.id}>
+          {usersByCultivation?.map((item: Cultivation, index) => (
+            <tr key={item.user.id}>
               <td className="px-4 py-2 text-left">
                 {item.user.name || "No name"}
               </td>
@@ -91,7 +85,7 @@ const CultivationTeam: React.FC = () => {
         Add team member
       </button>
       <AddUserModal isOpen={isModalOpen} onClose={closeModal}>
-        <UserListComponent users={usersByCultivation} />
+        <UserListComponent />
       </AddUserModal>
     </div>
   );

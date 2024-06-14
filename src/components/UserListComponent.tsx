@@ -1,34 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { getAllUsers } from "../services/UserService";
-
-interface User {
-  id: number;
-  name: string;
-}
-
-// interface UserListComponentProps {
-//   users: User[];
-// }
+import { Cultivation, getAllUsers } from "../services/UserService";
+import { useAppDispatch } from "../store/hooks";
+import { addUsers } from "../store/cutivation.slice";
 
 const UserListComponent: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [allUsers, setAllUsers] = useState<Cultivation[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
-  const [userColors, setUserColors] = useState<{ [userId: number]: string }>(
-    {}
-  );
+  const [userColors, setUserColors] = useState<{ [userId: number]: string }>({});
 
+  const dispatch = useAppDispatch();
+  
   useEffect(() => {
     fetchAllUsers();
   }, []);
 
   useEffect(() => {
-    const colors = allUsers.reduce((acc, user) => {
-      acc[user.id] = randomColor();
+   /* const colors = allUsers.reduce((acc, user) => {
+    //  acc[user.id] = randomColor();
       return acc;
     }, {} as { [userId: number]: string });
-    setUserColors(colors);
+    setUserColors(colors); */
   }, [allUsers]);
 
   const fetchAllUsers = async () => {
@@ -62,7 +55,7 @@ const UserListComponent: React.FC = () => {
     const selectedUserList = allUsers.filter((user) =>
       selectedUsers.has(user.id)
     );
-    console.log("Selected Users:", selectedUserList);
+    dispatch(addUsers(selectedUserList))
   };
 
   const randomColor = () => {
