@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { Cultivation, getAllUsers } from "../services/UserService";
+import { User, addUsersAsync, getAllUsers } from "../services/UserService";
 import { useAppDispatch } from "../store/hooks";
-import { addUsers } from "../store/cutivation.slice";
+
+
 
 const UserListComponent: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [allUsers, setAllUsers] = useState<Cultivation[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
   const [userColors, setUserColors] = useState<{ [userId: number]: string }>({});
-
   const dispatch = useAppDispatch();
   
   useEffect(() => {
@@ -17,16 +17,16 @@ const UserListComponent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-   /* const colors = allUsers.reduce((acc, user) => {
-    //  acc[user.id] = randomColor();
+    const colors = allUsers.reduce((acc, user) => {
+      acc[user.id] = randomColor();
       return acc;
     }, {} as { [userId: number]: string });
-    setUserColors(colors); */
+    setUserColors(colors); 
   }, [allUsers]);
 
   const fetchAllUsers = async () => {
     try {
-      const fetchedUsers = await getAllUsers();
+      const fetchedUsers:User[]= await getAllUsers();
       setAllUsers(fetchedUsers);
     } catch (err) {
       // setError("Failed to fetch users");
@@ -55,7 +55,7 @@ const UserListComponent: React.FC = () => {
     const selectedUserList = allUsers.filter((user) =>
       selectedUsers.has(user.id)
     );
-    dispatch(addUsers(selectedUserList))
+    dispatch(addUsersAsync(selectedUserList))
   };
 
   const randomColor = () => {
