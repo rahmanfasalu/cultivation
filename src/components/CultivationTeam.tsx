@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserListComponent from "./UserListComponent";
 import AddUserModal from "./AddUserModal";
 import UserRole from "./UserRole";
-import { Cultivation, getUsersByCultivation, removeUser } from "./../services/UserService";
+import { Cultivation, getUsersByCultivation, removeUser, changeRole } from "./../services/UserService";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const CultivationTeam: React.FC = () => {
@@ -49,6 +49,9 @@ const CultivationTeam: React.FC = () => {
     return <div>Error: {error}</div>;
   }  */
 
+  const changeRoleForUser = (role:{id:number,name:string},user:Cultivation)=>{
+    dispatch(changeRole({role,user}));
+  }
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">User List</h1>
@@ -71,6 +74,7 @@ const CultivationTeam: React.FC = () => {
                 <UserRole
                   isVisible={openDropdownIndex === index}
                   onToggle={() => handleDropdownToggle(index)}
+                  onChangeUserRole={(role)=>changeRoleForUser(role,item)}
                 />
               </td>
               <td className="px-4 py-2 text-left">

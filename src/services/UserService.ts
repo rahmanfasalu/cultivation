@@ -73,13 +73,13 @@ export const removeUser = createAsyncThunk<Cultivation, Cultivation>(
   }
 );
 
-export const changeRole = createAsyncThunk<Cultivation, Cultivation>(
+export const changeRole = createAsyncThunk<Cultivation, {role: {id:number,name:string}; user: Cultivation }>(
   'users/changeRole',
-  async (user) => {
+  async ({ role, user }) => {
    const cultivationId = '3fb82b92-4fdb-451d-b77e-817ae15826b7';
   try {
-    const response = await axios.put(`${BASE_API_URL}/cultivations/${cultivationId}/users/${user.user.id}`,user); // TODO : change fixed URL
-    return response.data;
+    const response = await axios.put(`${BASE_API_URL}/cultivations/${cultivationId}/users/${user.user.id}`,{role}); // TODO : change fixed URL
+    return {...user, role: response.data}
   } catch (error) {
     console.error('Error fetching users:', error);
     throw error;
@@ -107,4 +107,4 @@ export const getUserRoles = async () => {
       console.error('Error fetching user roles:', error);
       throw error;
     }
-  };
+};

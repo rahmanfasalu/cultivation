@@ -11,11 +11,11 @@ interface UserRole {
 interface UserRoleProps {
   isVisible: boolean;
   onToggle: () => void;
+  onChangeUserRole: (role:{id:number,name:string})=>void
 }
 
-const UserRole: React.FC<UserRoleProps> = ({ isVisible, onToggle }) => {
+const UserRole: React.FC<UserRoleProps> = ({ isVisible, onToggle, onChangeUserRole }) => {
   const [userRoles, setUserRoles] = useState<UserRole[]>([]);
-
   useEffect(() => {
     fetchUserRoles();
   }, []);
@@ -28,7 +28,6 @@ const UserRole: React.FC<UserRoleProps> = ({ isVisible, onToggle }) => {
       console.error("Failed to fetch user roles", err);
     }
   };
-
   return (
     <div className="relative">
       <button onClick={onToggle}>
@@ -40,6 +39,7 @@ const UserRole: React.FC<UserRoleProps> = ({ isVisible, onToggle }) => {
             <li
               key={role.id}
               className="flex items-center py-2 px-4 border-b border-gray-200"
+              onClick={()=>onChangeUserRole(role)}
             >
               <div className="flex-1">
                 <h3 className="font-bold">{role.name}</h3>
