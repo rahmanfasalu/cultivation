@@ -1,5 +1,5 @@
 import {  createSlice } from '@reduxjs/toolkit'
-import { Cultivation, addUsersAsync, getUsersByCultivation } from '../services/UserService'
+import { Cultivation, addUsersAsync, changeRole, getUsersByCultivation,removeUser } from '../services/UserService'
 export interface CounterState {
   users: Cultivation[];
   status:string;
@@ -14,30 +14,33 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    fetchUsers: (state, actions) => {
-      state.users = actions.payload
-    },
-    addUsers:(state, actions) =>{
-       state.users.push(actions.payload);
-    }
   },
   extraReducers: (builder) => {
     builder
       .addCase(getUsersByCultivation.pending, (state) => {
-            state.status = 'loading';
+          state.status = 'loading';
       })
       .addCase(getUsersByCultivation.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            state.users = action.payload;
+          state.status = 'succeeded';
+          state.users = action.payload;
       })
       .addCase(getUsersByCultivation.rejected, (state) => {
-            state.status = 'failed';
+          state.status = 'failed';
       })
       .addCase(addUsersAsync.fulfilled, (state,action)=>{
-        state.users.concat(action.payload)
+        state.users = state.users.concat(action.payload); 
+      })
+      .addCase(removeUser.fulfilled, (state,action)=>{
+        state.users = state.users.filter(user => user.user.id !== action.payload.user.id);
+      })
+      .addCase(changeRole.fulfilled, (state,action)=>{
+         const index = state.users.findIndex(user => user.user.id === action.payload.user.id);
+        if (index !== -1) {
+          state.users[index] = action.payload;
+        }
       })
   },
 })
 
-export const { fetchUsers, addUsers } = usersSlice.actions
+export const actions = usersSlice.actions
 export default usersSlice.reducer

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserListComponent from "./UserListComponent";
 import AddUserModal from "./AddUserModal";
 import UserRole from "./UserRole";
-import { Cultivation, getUsersByCultivation } from "./../services/UserService";
+import { Cultivation, getUsersByCultivation, removeUser } from "./../services/UserService";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const CultivationTeam: React.FC = () => {
@@ -34,6 +34,10 @@ const CultivationTeam: React.FC = () => {
 
   const handleDropdownToggle = (index: number) => {
     setOpenDropdownIndex(openDropdownIndex === index ? null : index);
+  };
+
+  const remove = (item:Cultivation)=>{
+    dispatch(removeUser(item));
   };
 
   /*
@@ -70,7 +74,7 @@ const CultivationTeam: React.FC = () => {
                 />
               </td>
               <td className="px-4 py-2 text-left">
-                <button className="px-2 py-1 text-red-500 hover:text-red-700">
+                <button className="px-2 py-1 text-red-500 hover:text-red-700" onClick={()=>remove(item)}>
                   Remove
                 </button>
               </td>

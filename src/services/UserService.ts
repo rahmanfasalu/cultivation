@@ -58,6 +58,35 @@ export const getUsersByCultivation = createAsyncThunk(
   }
 );
 
+
+export const removeUser = createAsyncThunk<Cultivation, Cultivation>(
+  'users/removeUser',
+  async (user) => {
+   const cultivationId = '3fb82b92-4fdb-451d-b77e-817ae15826b7';
+  try {
+    await axios.delete(`${BASE_API_URL}/cultivations/${cultivationId}/users/${user.user.id}`); // TODO : change fixed URL
+    return user;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+  }
+);
+
+export const changeRole = createAsyncThunk<Cultivation, Cultivation>(
+  'users/changeRole',
+  async (user) => {
+   const cultivationId = '3fb82b92-4fdb-451d-b77e-817ae15826b7';
+  try {
+    const response = await axios.put(`${BASE_API_URL}/cultivations/${cultivationId}/users/${user.user.id}`,user); // TODO : change fixed URL
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+  }
+);
+
 /*
 export const getUsersByCultivation = async (): Promise<User[]> => {
   const cultivationId = '3fb82b92-4fdb-451d-b77e-817ae15826b7';
@@ -70,7 +99,7 @@ export const getUsersByCultivation = async (): Promise<User[]> => {
   }
 }; */
 
-export const getUserRoles = async (): Promise<Cultivation[]> => {
+export const getUserRoles = async () => {
     try {
       const response = await axios.get(`${BASE_API_URL}/cultivation-roles`);
       return response.data;
