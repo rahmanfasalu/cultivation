@@ -9,13 +9,13 @@ export interface User {
 export interface Cultivation {
   user:{
     id: number;
-    name: string;
+    name?: string;
   }
   role: {
-    id:string,
-    name:string
+    id:number,
+    name?:string
   };
-  description: string;
+  description?: string;
 }
 
 const BASE_API_URL = 'https://14dtv3lu9k.execute-api.eu-central-1.amazonaws.com';
@@ -30,11 +30,14 @@ export const getAllUsers = async (): Promise<User[]> => {
   }
 };
 
-export const addUsersAsync = createAsyncThunk<User[], User[]>('users/addUsers', async (users) => {
+export const addUsersAsync = createAsyncThunk<Cultivation[], Cultivation[]>('users/addUsers', async (users) => {
   try {
-    const response = await axios.post(`${BASE_API_URL}/users`, users);
-    console.log(response.data);
-    return response.data;
+    const cultivationId = '3fb82b92-4fdb-451d-b77e-817ae15826b7';
+    const result = await Promise.all(users.map(async (item) => {
+      const response = await axios.post(`${BASE_API_URL}/cultivations/${cultivationId}/users`, item);
+      return response.data;
+    }));
+    return result;
   } catch (error) {
     console.error('Error adding users:', error);
     throw error;

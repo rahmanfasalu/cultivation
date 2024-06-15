@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { User, addUsersAsync, getAllUsers } from "../services/UserService";
+import { Cultivation, User, addUsersAsync, getAllUsers } from "../services/UserService";
 import { useAppDispatch } from "../store/hooks";
 
 
@@ -55,7 +55,16 @@ const UserListComponent: React.FC = () => {
     const selectedUserList = allUsers.filter((user) =>
       selectedUsers.has(user.id)
     );
-    dispatch(addUsersAsync(selectedUserList))
+    const updated:Cultivation[] = selectedUserList.map((user:User)=>{
+      return {
+        role: {
+          id: 3
+        },
+        user
+      }
+    })
+
+    dispatch(addUsersAsync(updated))
   };
 
   const randomColor = () => {

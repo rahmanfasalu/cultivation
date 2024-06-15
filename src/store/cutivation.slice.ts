@@ -1,5 +1,5 @@
 import {  createSlice } from '@reduxjs/toolkit'
-import { Cultivation, getUsersByCultivation } from '../services/UserService'
+import { Cultivation, addUsersAsync, getUsersByCultivation } from '../services/UserService'
 export interface CounterState {
   users: Cultivation[];
   status:string;
@@ -32,7 +32,10 @@ export const usersSlice = createSlice({
       })
       .addCase(getUsersByCultivation.rejected, (state) => {
             state.status = 'failed';
-      });
+      })
+      .addCase(addUsersAsync.fulfilled, (state,action)=>{
+        state.users.concat(action.payload)
+      })
   },
 })
 
